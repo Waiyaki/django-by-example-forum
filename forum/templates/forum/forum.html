@@ -1,0 +1,79 @@
+{% extends "forum/base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+     | {{ forum.title }}
+{% endblock title %}
+
+{% block content %}
+    <div>
+        <h1 class="page-header">
+            Discussion on <br>
+            {{ forum.title }}
+        </h1>
+        <br>
+        <span class="glyphicon glyphicon-plus pull-right btn btn-sm btn-default">
+            <a href="{% url 'forum:add_thread' pk=forum.pk %}">Start New Topic</a>
+        </span>
+    </div>
+    <br>
+    <div>
+        <table class="table">
+            <thead class="text-center">
+                <th><h3>Topics</h3></th>
+                <th><h3>Replies</h3></th>
+                <th><h3>Last Post</h3></th>
+                <th></th>
+            </thead>
+            <tbody>
+                {% if threads %}
+                    {% for thread in threads %}
+                        <tr>
+                            <td>
+                                <h4><a href="{% url 'forum:thread' pk=thread.pk %}">{{ thread.title }}</a></h4>
+                            </td>
+                            <td class="text-center">{{ thread.num_replies }}</td>
+                            <td><small>{{ thread.last_post.short|linebreaks }}</small></td>
+                            <td>
+                                <a href="{% url 'forum:thread' pk=thread.pk %}" class="btn btn-primary btn-sm">View Topic</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="3" class="text-center"><em>No threads in this forum. Check later or add a new topic.</em></td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if threads %}
+        <div class="row" style="clear: both">
+            <span class="step-links">
+                <ul class="pager">
+                    <div class="col-xs-4">
+                        {% if threads.has_previous %}
+                            <li class="previous">
+                                <a href="?page={{ threads.previous_page_number }}">&larr; Newer</a>
+                            </li>
+                        {% endif %}
+                    </div>
+                    <div class="col-xs-4">
+                        <li class="active">
+                            <a href="#">{{ threads.number }} / {{ threads.paginator.num_pages }}</a>
+                        </li>
+                    </div>
+                    <div class="col-xs-4">
+                        {% if threads.has_next %}
+                            <li class="next">
+                                <a href="?page={{ threads.next_page_number }}">Older &rarr;</a>
+                            </li>
+                        {% endif %}
+                    </div>
+                </ul>
+            </span>
+        </div>
+    {% endif %}
+    
+{% endblock content %}

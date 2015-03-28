@@ -4,20 +4,26 @@
 {% block content %}
     <div class="main">
         <!-- forums -->
+        <div class="jumbotron">
+            <h1 class="page-header">Marioshoni Forum...<small><h3>Discuss what you want.</h3></small></h1>
+            <h4>Choose a forum of your interest, or create one.</h4>
+        </div>
         <table class="table">
-            <thead>
-                <th>Forum</th>
-                <th>Posts</th>
-                <th>Last Post</th>
-                <td></td>
+            <thead class="text-center">
+                <th><h3>Forum</h3></th>
+                <th><h3>Threads</h3></th>
+                <th><h3>Posts</h3></th>
+                <th><h3>Last Post</h3></th>
+                <th></th>
             </thead>
             {% if forums %}
                 {% for forum in forums %}
                     <tr>
                         <td><a href="{% url 'forum:forum' pk=forum.pk %}">{{ forum.title }}</a></td>
-                        <td>{{ forum.num_posts }}</td>
+                        <td class="text-center">{{ forum.num_threads }}</td>
+                        <td class="text-center">{{ forum.num_posts }}</td>
                         <td><small>{{ forum.last_post.short| linebreaks }}</small></td>
-                        <td><a href="{% url 'forum:forum' pk=forum.pk %}" class="btn btn-default">View</a></td>
+                        <td><a href="{% url 'forum:forum' pk=forum.pk %}" class="btn btn-default">View Thread</a></td>
                     </tr>
                 {% endfor %}
             {% else %}
@@ -27,4 +33,31 @@
             {% endif %}
         </table>
     </div>
+{% if forums %}
+    <div class="row" style="clear: both">
+        <span class="step-links">
+            <ul class="pager">
+                <div class="col-xs-4">
+                    {% if forums.has_previous %}
+                        <li class="previous">
+                            <a href="?page={{ forums.previous_page_number }}">&larr; Newer</a>
+                        </li>
+                    {% endif %}
+                </div>
+                <div class="col-xs-4">
+                    <li class="active">
+                        <a href="#">{{ forums.number }} / {{ forums.paginator.num_pages }}</a>
+                    </li>
+                </div>
+                <div class="col-xs-4">
+                    {% if forums.has_next %}
+                        <li class="next">
+                            <a href="?page={{ forums.next_page_number }}">Older &rarr;</a>
+                        </li>
+                    {% endif %}
+                </div>
+            </ul>
+        </span>
+    </div>
+{% endif %}
 {% endblock %}

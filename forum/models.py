@@ -10,6 +10,9 @@ class Forum(models.Model):
     def num_posts(self):
         return sum([thread.num_posts() for thread in self.thread_set.all()])
 
+    def num_threads(self):
+        return self.thread_set.count()
+
     def last_post(self):
         if self.thread_set.count():
             last = None
@@ -39,7 +42,7 @@ class Thread(models.Model):
         return self.post_set.count()
 
     def num_replies(self):
-        return self.post_set.count() - 1
+        return self.post_set.count()
 
     def last_post(self):
         if self.post_set.count():
