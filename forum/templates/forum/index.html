@@ -1,0 +1,30 @@
+{% extends "forum/base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+    <div class="main">
+        <!-- forums -->
+        <table class="table">
+            <thead>
+                <th>Forum</th>
+                <th>Posts</th>
+                <th>Last Post</th>
+                <td></td>
+            </thead>
+            {% if forums %}
+                {% for forum in forums %}
+                    <tr>
+                        <td><a href="{% url 'forum:forum' pk=forum.pk %}">{{ forum.title }}</a></td>
+                        <td>{{ forum.num_posts }}</td>
+                        <td><small>{{ forum.last_post.short| linebreaks }}</small></td>
+                        <td><a href="{% url 'forum:forum' pk=forum.pk %}" class="btn btn-default">View</a></td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="3" class="text-center"><em>No forums yet...</em></td>
+                </tr>
+            {% endif %}
+        </table>
+    </div>
+{% endblock %}
