@@ -9,6 +9,18 @@
 {% endif %}
 
 {% block content %}
+    {% if thread %}
+        <div class="page-header">
+            <h1>
+                Thoughts about {{ thread.title }}
+            </h1>
+            <br>
+            <div class="pull-right">
+                <a href="{% url 'forum:add_post' pk=thread.pk %}" class="glyphicon glyphicon-plus pull-right btn btn-sm btn-default"> Say something.</a>
+            </div>
+            <br>
+        </div>
+    {% endif %}
     <div class="col-xs-12 col-md-10 col-md-offset-1">
         {% if posts %}
             {% for post in posts %}

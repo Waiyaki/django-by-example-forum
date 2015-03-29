@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
 
@@ -61,4 +61,8 @@ def make_paginator(request, items, number):
 
 
 def add_thread(request, pk):
-    pass
+    return HttpResponse("<h1>Work in Progress...</h1>")
+
+
+def add_post(request, pk):
+    return HttpResponse("<h1>Work in Progress...</h1>")
