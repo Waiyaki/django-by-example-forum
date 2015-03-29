@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404
+from django.http import Http404
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
 
@@ -19,7 +19,7 @@ def forum(request, pk):
     """
     Listing all threads in a forum with pk=pk.
     """
-    forum = Forum.objects.get(pk=pk)
+    forum = get_object_or_404(Forum, pk=pk)
     threads = Thread.objects.filter(forum=pk).order_by('-created')
     threads = make_paginator(request, threads, 20)
     context_dict = {'threads': threads, 'forum': forum}
@@ -27,7 +27,19 @@ def forum(request, pk):
 
 
 def thread(request, pk):
-    return HttpResponse('<h1>Work in progress...</h1><a href="/forum/">home</a>')
+    """
+    List posts in this thread.
+    """
+    # get_object_or_404 ?? get_list_or_404?? Or just no error handling at all here???
+    try:
+        posts = Post.objects.filter(thread=pk).order_by('created')
+    except:
+        raise Http404
+
+    posts = make_paginator(request, posts, 15)
+    thread = get_object_or_404(Thread, pk=pk)
+    context_dict = {'posts': posts, 'thread': thread}
+    return render(request, 'forum/thread.html', context_dict)
 
 
 def make_paginator(request, items, number):
