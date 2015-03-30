@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import Http404, HttpResponse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.contrib.auth.decorators import login_required
 
 
 from .models import Forum, Thread, Post
@@ -9,7 +10,7 @@ from .forms import PostForm
 
 
 def index(request):
-    forums = Forum.objects.all()
+    forums = Forum.objects.order_by('-created')
     forums = make_paginator(request, forums, 20)
 
     context_dict = {'forums': forums}
@@ -61,13 +62,16 @@ def make_paginator(request, items, number):
     return items
 
 
+@login_required
 def add_thread(request, pk):
     return HttpResponse("<h1>Work in Progress...</h1>")
 
 
+@login_required
 def add_post(request, pk):
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        post = Post(thread=get_object_or_404(Thread, pk=pk))
+        form = PostForm(request.POST, instance=post)
         if form.is_valid():
             post = form.save(commit=False)
             post.creator = request.user
@@ -77,4 +81,6 @@ def add_post(request, pk):
             print(form.errors)
     else:
         form = PostForm()
-    return render(request, 'forum/add_post.html', {'form': form})
+        thread = get_object_or_404(Thread, pk=pk)
+        context_dict = {'form': form, 'thread': thread}
+    return render(request, 'forum/add_post.html', context_dict)

@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 
 class Forum(models.Model):
     title = models.CharField(max_length=60)
+    created = models.DateTimeField(auto_now_add=True)
 
     def num_posts(self):
         return sum([thread.num_posts() for thread in self.thread_set.all()])

@@ -15,9 +15,11 @@
                 Thoughts about {{ thread.title }}
             </h1>
             <br>
-            <div class="pull-right">
-                <a href="{% url 'forum:add_post' pk=thread.pk %}" class="glyphicon glyphicon-plus pull-right btn btn-sm btn-default"> Say something.</a>
-            </div>
+            {% if user.is_authenticated %}
+                <div class="pull-right">
+                    <a href="{% url 'forum:add_post' pk=thread.pk %}" class="glyphicon glyphicon-plus pull-right btn btn-sm btn-primary"> Say something.</a>
+                </div>
+            {% endif %}
             <br>
         </div>
     {% endif %}

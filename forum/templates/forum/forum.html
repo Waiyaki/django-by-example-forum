@@ -11,9 +11,11 @@
             Discussions in {{ forum.title }} forum.
         </h1>
         <br>
-        <span>
-            <a href="{% url 'forum:add_thread' pk=forum.pk %}" class="glyphicon glyphicon-plus pull-right btn btn-sm btn-default"> Start New Topic</a>
-        </span>
+        {% if user.is_authenticated %}
+            <span>
+                <a href="{% url 'forum:add_thread' pk=forum.pk %}" class="glyphicon glyphicon-plus pull-right btn btn-md btn-primary"> Start New Topic</a>
+            </span>
+        {% endif %}
     </div>
     <br>
     <div>
