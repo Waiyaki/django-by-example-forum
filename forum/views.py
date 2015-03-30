@@ -1,9 +1,10 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import Http404, HttpResponse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
 
 from .models import Forum, Thread, Post
+from .forms import PostForm
 # Create your views here.
 
 
@@ -65,4 +66,15 @@ def add_thread(request, pk):
 
 
 def add_post(request, pk):
-    return HttpResponse("<h1>Work in Progress...</h1>")
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.creator = request.user
+            post.save()
+            return redirect('forum:thread', pk=pk)
+        else:
+            print(form.errors)
+    else:
+        form = PostForm()
+    return render(request, 'forum/add_post.html', {'form': form})
