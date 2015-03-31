@@ -8,7 +8,7 @@
 {% block content %}
     <div>
         <h1 class="page-header">
-            Discussions in {{ forum.title }} forum.
+            {{ forum.title }}.
         </h1>
         <br>
         {% if user.is_authenticated %}
@@ -47,6 +47,9 @@
                 {% endif %}
             </tbody>
         </table>
+    </div>
+    <div class="pull-left" style="clear: both">
+        <a href="{% url 'forum:index' %}">&laquo; Back to forums.</a>
     </div>
 
     {% if threads %}

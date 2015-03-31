@@ -8,4 +8,5 @@ urlpatterns = patterns('',
     url(r'^thread/(?P<pk>\d+)/$', views.thread, name='thread'),
     url(r'^forum/add_thread/(?P<pk>\d+)/$', views.add_thread, name='add_thread'),
     url(r'^thread/add_post/(?P<pk>\d+)/$', views.add_post, name='add_post'),
+    url(r'^create_forum/$', views.create_forum, name='create_forum'),
 )

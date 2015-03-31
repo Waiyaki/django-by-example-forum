@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 
 
 from .models import Forum, Thread, Post
-from .forms import PostForm
+from .forms import PostForm, ThreadForm, ForumForm
 # Create your views here.
 
 
@@ -64,13 +64,28 @@ def make_paginator(request, items, number):
 
 @login_required
 def add_thread(request, pk):
-    return HttpResponse("<h1>Work in Progress...</h1>")
+    forum = get_object_or_404(Forum, pk=pk)
+    if request.method == 'POST':
+        thread = Thread(forum=forum)
+        form = ThreadForm(request.POST, instance=thread)
+        if form.is_valid():
+            thread = form.save(commit=False)
+            thread.creator = request.user
+            thread.save()
+            return redirect('forum:forum', pk=pk)
+        else:
+            print(form.errors)
+    else:
+        form = ThreadForm()
+        context_dict = {'form': form, 'forum': forum}
+    return render(request, 'forum/add_thread.html', context_dict)
 
 
 @login_required
 def add_post(request, pk):
+    thread = get_object_or_404(Thread, pk=pk)
     if request.method == 'POST':
-        post = Post(thread=get_object_or_404(Thread, pk=pk))
+        post = Post(thread=thread)
         form = PostForm(request.POST, instance=post)
         if form.is_valid():
             post = form.save(commit=False)
@@ -81,6 +96,21 @@ def add_post(request, pk):
             print(form.errors)
     else:
         form = PostForm()
-        thread = get_object_or_404(Thread, pk=pk)
         context_dict = {'form': form, 'thread': thread}
     return render(request, 'forum/add_post.html', context_dict)
+
+
+@login_required
+def create_forum(request):
+    if request.method == 'POST':
+        form = ForumForm(request.POST)
+        if form.is_valid():
+            forum = form.save(commit=False)
+            forum.creator = request.user
+            forum.save()
+            return redirect('forum:index')
+        else:
+            print(form.errors)
+    else:
+        form = ForumForm()
+    return render(request, 'forum/create_forum.html', {'form': form})

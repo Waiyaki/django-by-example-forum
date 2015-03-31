@@ -1,0 +1,30 @@
+{% extends "forum/base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+    | Create Forum
+{% endblock title %}
+
+{% block content %}
+    <br>
+    <form role="form" method="post" action="{% url 'forum:create_forum' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <legend>Create Forum</legend>
+        </div>
+        <div class="col-sm-6 pull-left">
+            <div class="form-group">
+                <label for="id_title">Title</label>
+                <input class="form-control" id="id_title" name="title" maxlength="60" type="text">
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-primary" type="submit">Create</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="pull-left">
+        <a href="{% url 'forum:index' %}">&laquo; Back to forums</a>
+    </div>
+{% endblock content %}

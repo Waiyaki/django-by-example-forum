@@ -12,7 +12,7 @@
     {% if thread %}
         <div class="page-header">
             <h1>
-                Thoughts about {{ thread.title }}
+                {{ thread.title }}.
             </h1>
             <br>
             {% if user.is_authenticated %}
@@ -28,13 +28,16 @@
             {% for post in posts %}
                 <div class="post">
                     <h2 class="page-header">{{ post.title }}</h2>
-                    <span>| by {{ post.creator }}</span>
-                    <p>
+                    <span>| by {{ post.creator }} | {{ post.created }}</span>
+                    <div id="post-content">
                         {{ post.body | linebreaks }}
-                    </p>
+                    </div>
                 </div>
             {% endfor %}
         {% endif %}
+        <div class="pull-left" style="clear: both">
+            <a href="{% url 'forum:forum' pk=thread.forum.pk %}">&laquo; Back to thread</a>
+        </div>
     </div>
     {% if posts %}
         <div class="row" style="clear: both">
@@ -63,4 +66,5 @@
             </span>
         </div>
     {% endif %}
+
 {% endblock content %}

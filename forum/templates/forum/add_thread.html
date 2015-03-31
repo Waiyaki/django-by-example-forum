@@ -1,0 +1,30 @@
+{% extends "forum/base.html" %}
+{% load staticfiles %}
+
+{% if forum %}
+    {% block title %}
+        | Adding a thread to: {{ forum.title }}
+    {% endblock title %}
+{% endif %}
+
+{% block content %}
+    <form role="form" action="{% url 'forum:add_thread' pk=forum.pk %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <legend>Start a new topic in {{ forum.title }}</legend>
+        </div>
+        <div class="col-sm-6 pull-left">
+            <div class="form-group">
+                <label for="id_title">Subject</label>
+                <input type="text" id="id_title" maxlength="60" name="title" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-primary" type="submit">Create</button>
+            </div>
+        </div>
+    </form>
+    <div class="pull-right">
+        <a href="{% url 'forum:forum' pk=forum.pk %}">&laquo; Back to forum</a>
+    </div>
+{% endblock content %}

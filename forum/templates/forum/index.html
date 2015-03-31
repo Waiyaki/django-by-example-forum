@@ -9,7 +9,7 @@
             <h4>Choose a forum of your interest.</h4>
             {% if user.is_authenticated %}
                 <span class="pull-right">
-                    <a href="#" class="btn btn-primary btn-md glyphicon glyphicon-plus"> Create Forum</a>
+                    <a href="{% url 'forum:create_forum' %}" class="btn btn-primary btn-md glyphicon glyphicon-plus"> Create Forum</a>
                 </span>
             {% endif %}
         </div>
