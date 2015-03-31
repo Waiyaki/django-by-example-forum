@@ -28,7 +28,8 @@
             {% for post in posts %}
                 <div class="post">
                     <h2 class="page-header">{{ post.title }}</h2>
-                    <span>| by {{ post.creator }} | {{ post.created }}</span>
+                    <div>| by {{ post.creator }} | {{ post.created }}</div>
+                    <br>
                     <div id="post-content">
                         {{ post.body | linebreaks }}
                     </div>
@@ -36,7 +37,7 @@
             {% endfor %}
         {% endif %}
         <div class="pull-left" style="clear: both">
-            <a href="{% url 'forum:forum' pk=thread.forum.pk %}">&laquo; Back to thread</a>
+            <a href="{% url 'forum:forum' pk=thread.forum.pk %}">&laquo; Back to thread.</a>
         </div>
     </div>
     {% if posts %}

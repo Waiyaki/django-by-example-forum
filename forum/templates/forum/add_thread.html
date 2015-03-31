@@ -24,7 +24,9 @@
             </div>
         </div>
     </form>
-    <div class="pull-right">
-        <a href="{% url 'forum:forum' pk=forum.pk %}">&laquo; Back to forum</a>
+    <div class="row" style="clear: both">
+        <div class="pull-left">
+            <a href="{% url 'forum:forum' pk=forum.pk %}">&laquo; Back to forum.</a>
+        </div>
     </div>
 {% endblock content %}
