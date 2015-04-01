@@ -114,3 +114,8 @@ def create_forum(request):
     else:
         form = ForumForm()
     return render(request, 'forum/create_forum.html', {'form': form})
+
+
+@login_required
+def edit_profile(request):
+    return HttpResponse("<h1>Work in progress...</h1>")

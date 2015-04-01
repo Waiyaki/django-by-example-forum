@@ -18,6 +18,11 @@
                     <a href="/forum/">Home</a>
                 </li>
             </ul>
+            {% if user.is_authenticated %}
+                <ul class="nav navbar-nav pull-right">
+                    <li><a href="{% url 'forum:edit_profile' %}">Edit Profile</a></li>
+                </ul>
+            {% endif %}
         </nav>
 
         <div class="container">
