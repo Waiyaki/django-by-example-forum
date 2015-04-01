@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Forum, Thread, Post
+from .models import Forum, Thread, Post, UserProfile
 # Register your models here.
 
 
@@ -20,3 +20,4 @@ class PostAdmin(admin.ModelAdmin):
 admin.site.register(Forum, ForumAdmin)
 admin.site.register(Thread, ThreadAdmin)
 admin.site.register(Post, PostAdmin)
+admin.site.register(UserProfile)

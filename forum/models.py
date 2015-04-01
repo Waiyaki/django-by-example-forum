@@ -64,3 +64,12 @@ class Post(models.Model):
     def short(self):
         return "{} - {}\n{}".format(self.creator, self.title, self.created.strftime("%b %d, %I:%M %p"))
     short.allow_tags = True
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
+    avatar = models.ImageField(upload_to='profile_images', blank=True, null=True)
+    posts = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.user.username

@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 
 
 from .models import Forum, Thread, Post
-from .forms import PostForm, ThreadForm, ForumForm
+from .forms import PostForm, ThreadForm, ForumForm, UserForm, UserProfileForm
 # Create your views here.
 
 
