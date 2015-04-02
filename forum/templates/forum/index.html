@@ -29,13 +29,13 @@
                                 <td><a href="{% url 'forum:forum' pk=forum.pk %}">{{ forum.title }}</a></td>
                                 <td class="text-center">{{ forum.num_threads }}</td>
                                 <td class="text-center">{{ forum.num_posts }}</td>
-                                <td><small>{{ forum.last_post.short| linebreaks }}</small></td>
+                                <td><small>{{ forum.last_post.short | linebreaks }} {{ forum.last_post.created }}</small></td>
                                 <td><a href="{% url 'forum:forum' pk=forum.pk %}" class="btn btn-default">View Thread</a></td>
                             </tr>
                         {% endfor %}
                     {% else %}
                         <tr>
-                            <td colspan="3" class="text-center"><em>No forums yet...</em></td>
+                            <td colspan="5" class="text-center"><em>No forums yet...</em></td>
                         </tr>
                     {% endif %}
                 </table>

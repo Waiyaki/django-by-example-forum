@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth.models import User
 
 # Create your models here.
@@ -6,7 +7,7 @@ from django.contrib.auth.models import User
 
 class Forum(models.Model):
     title = models.CharField(max_length=60)
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(default=timezone.now)
     creator = models.ForeignKey(User, blank=True, null=True)
 
     def num_posts(self):
@@ -33,7 +34,7 @@ class Forum(models.Model):
 
 class Thread(models.Model):
     title = models.CharField(max_length=60)
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(default=timezone.now)
     creator = models.ForeignKey(User, blank=True, null=True)
     forum = models.ForeignKey(Forum)
 
@@ -53,7 +54,7 @@ class Thread(models.Model):
 
 class Post(models.Model):
     title = models.CharField(max_length=60)
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(default=timezone.now)
     creator = models.ForeignKey(User, blank=True, null=True)
     thread = models.ForeignKey(Thread)
     body = models.TextField(max_length=10000)
@@ -62,7 +63,7 @@ class Post(models.Model):
         return "{} - {} - {}".format(self.creator, self.thread, self.title)
 
     def short(self):
-        return "{} - {}\n{}".format(self.creator, self.title, self.created.strftime("%b %d, %I:%M %p"))
+        return "{} - {}".format(self.creator, self.title)
     short.allow_tags = True
 
 

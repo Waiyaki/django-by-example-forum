@@ -1,17 +1,36 @@
 {% extends "forum/base.html" %}
 
-{% block title %}
-    | Login
-{% endblock title %}
-
 {% block content %}
-    <h1>Login</h1>
-    <form method="post" action=".">
-        {% csrf_token %}
-        {{ form.as_p }}
+    <div class="col-md-6 col-md-offset-3 col-sm-10 col-sm-offset-1 col-xs-12 jumbotron">
+        <form method="post" action="." class="form-signin" role="form">
+            {% csrf_token %}
+            <h1 class="form-signin-heading">Login</h1>
 
-        <input type="submit" value="Log in">
-        <input type="hidden" name="next" value="{{ next }}">
-    </form>
-    <p>Not a member? <a href="{% url 'registration_register' %}">Register</a></p>
+            {% if form.errors.password %}
+                <ul class="list-group">
+                    <li class="list-group-item list-group-item-danger">Invalid username or password.</li>
+                </ul>
+            {% endif %}
+            <div class="form-group">
+                <label for="id_username">Username:</label>
+                <input class="form-control" id="id_username" maxlength="254" name="username" type="text" required autofocus placeholder="Username">
+            </div>
+
+            <div class="form-group">
+                <label for="id_password">Password:</label>
+                <input class="form-control" id="id_password" name="password" type="password" placeholder="Enter password">
+            </div>
+
+            <br>
+            <input type="submit" value="Login" class="btn btn-primary btn-lg btn-block" />
+            
+        </form>
+
+        <hr>
+        <div class="col-xs-12">
+            <p><small>Not registered yet? </small><a href="{% url 'registration_register' %}" class="btn btn-primary">Register Here</a></p>
+    </div>
+    </div>
+
+    
 {% endblock content %}
