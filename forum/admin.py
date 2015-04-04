@@ -17,7 +17,11 @@ class PostAdmin(admin.ModelAdmin):
     search_fields = ['title', 'creator']
     list_display = ['title', 'thread', 'creator', 'created']
 
+
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ['avatar', 'posts']
+
 admin.site.register(Forum, ForumAdmin)
 admin.site.register(Thread, ThreadAdmin)
 admin.site.register(Post, PostAdmin)
-admin.site.register(UserProfile)
+admin.site.register(UserProfile, UserProfileAdmin)

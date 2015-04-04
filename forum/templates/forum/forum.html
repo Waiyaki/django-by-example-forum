@@ -20,9 +20,9 @@
     <br>
     <div>
         <table class="table table-striped table-bordered table-hover">
-            <thead class="text-center">
+            <thead>
                 <th><h3 class="text-center">Topics</h3></th>
-                <th><h3>Replies</h3></th>
+                <th><h3 class="text-center">Replies</h3></th>
                 <th><h3 class="text-center">Last Post</h3></th>
                 <th></th>
             </thead>
@@ -34,8 +34,8 @@
                                 <h4><a href="{% url 'forum:thread' pk=thread.pk %}">{{ thread.title }}</a></h4>
                             </td>
                             <td class="text-center">{{ thread.num_replies }}</td>
-                            <td><small>{{ thread.last_post.short|linebreaks }}</small></td>
-                            <td>
+                            <td><small>{{ thread.last_post.short|linebreaks }}{{ thread.last_post.created }}</small></td>
+                            <td class="text-center">
                                 <a href="{% url 'forum:thread' pk=thread.pk %}" class="btn btn-primary btn-sm">View Topic</a>
                             </td>
                         </tr>

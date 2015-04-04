@@ -1,11 +1,16 @@
+import os
+from PIL import Image
+
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import Http404, HttpResponse
+from django.http import Http404
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.conf import settings
 
 
-from .models import Forum, Thread, Post
-from .forms import PostForm, ThreadForm, ForumForm, UserForm, UserProfileForm
+from .models import Forum, Thread, Post, UserProfile
+from .forms import PostForm, ThreadForm, ForumForm, UserProfileForm
 # Create your views here.
 
 
@@ -90,6 +95,7 @@ def add_post(request, pk):
         if form.is_valid():
             post = form.save(commit=False)
             post.creator = request.user
+            post.creator.userprofile.posts += 1
             post.save()
             return redirect('forum:thread', pk=pk)
         else:
@@ -117,5 +123,96 @@ def create_forum(request):
 
 
 @login_required
-def edit_profile(request):
-    return HttpResponse("<h1>Work in progress...</h1>")
+def edit_profile(request, pk):
+    try:
+        profile = UserProfile.objects.get(user=User.objects.get(pk=pk))
+    except:
+        profile = None
+
+    if request.method == 'POST':
+        if profile:
+            form = UserProfileForm(request.POST, instance=profile)
+            if form.is_valid():
+                if 'avatar' in request.FILES:
+                    avatar = request.FILES['avatar']
+                    profile.avatar = avatar
+                    profile.save()
+                    # This thumbnail will always be loaded in pages instead of full sized photos.
+                    makethumbnail(profile.avatar.name)
+        else:
+            form = UserProfileForm(request.POST)
+            if form.is_valid():
+                profile = form.save(commit=False)
+                profile.user = request.user
+                if 'avatar' in request.FILES:
+                    avatar = request.FILES['avatar']
+                    profile.avatar = avatar
+                    profile.save()
+                    makethumbnail(profile.avatar.name)
+                profile.save()
+            else:
+                print(form.errors)
+                context_dict = {'errors': form.errors, 'form': form}
+                return render(request, 'forum/edit_profile.html', context_dict)
+
+        context_dict = {'form': form, 'edit_success': True, 'img': settings.MEDIA_URL + get_avatar(
+            profile.avatar.name, (300, 300))}
+        return render(request, 'forum/edit_profile.html', context_dict)
+    else:
+        form = UserProfileForm()
+        context_dict = {'form': form}
+        if profile:
+            if profile.avatar:
+                context_dict['img'] = settings.MEDIA_URL + get_avatar(profile.avatar.name, (300, 300))
+    return render(request, 'forum/edit_profile.html', context_dict)
+
+
+def makethumbnail(imgfile):
+    outdir = os.path.join(settings.MEDIA_ROOT, 'profile_images/thumbs')
+    if not os.path.exists(outdir):
+        print('Making thumb dir...', outdir)
+        os.mkdir(outdir)
+
+    fname, ext = os.path.splitext(imgfile)
+    fname = fname.split('/')[1]
+    size1 = (200, 200)
+    thumb1size = str(size1[0]) + 'x' + str(size1[1])
+    thumb1 = fname + '-thumb1-' + thumb1size + ext
+    thumb1file = os.path.join(outdir, thumb1)
+
+    size2 = (300, 300)
+    thumb2size = str(size2[0]) + 'x' + str(size2[1])
+    thumb2 = fname + '-thumb2-' + thumb2size + ext
+    thumb2file = os.path.join(outdir, thumb2)
+
+    thumbfiles = [thumb1file, thumb2file]
+    sizes = [size1, size2]
+    for index, filename in enumerate(thumbfiles):
+        try:
+            thumb = Image.open(os.path.join(settings.MEDIA_ROOT, imgfile))
+            thumb.thumbnail(sizes[index], Image.ANTIALIAS)
+            thumb.save(filename)
+        except:
+            print("Error encountered. Skipping => ", filename)
+            return False
+    return True
+
+
+def get_avatar(imgname, size=(200, 200)):
+    outdir = os.path.join(settings.MEDIA_ROOT, 'profile_images/thumbs')
+    fname, ext = os.path.splitext(imgname)
+    thumbsize = str(size[0]) + 'x' + str(size[1])
+    thumb = fname.split('/')[1]
+    if size == (200, 200):
+        thumb += '-thumb1-' + thumbsize + ext
+    else:
+        thumb += '-thumb2-' + thumbsize + ext
+
+    if os.path.exists(outdir):
+        if os.path.isfile(os.path.join(outdir, thumb)):
+            return 'profile_images/thumbs/' + thumb
+        else:
+            return imgname
+    else:
+        # No thumbnail available
+        return imgname

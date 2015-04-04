@@ -1,5 +1,6 @@
 body {
-    padding-top: 50px;
+    padding-top: 70px;
+    padding-bottom: 70px;
 }
 .post {
     background: #efefef;
@@ -17,6 +18,9 @@ body {
 }
 
 .footer {
-    padding: 0px 10px 10px 10px;
-    margin: 5px;
+    padding: 10px;
+}
+
+.navbar-form[input] {
+    background: #ffffff;
 }
