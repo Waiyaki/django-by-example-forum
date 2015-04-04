@@ -150,7 +150,8 @@ def edit_profile(request, pk):
                     avatar = request.FILES['avatar']
                     profile.avatar = avatar
                     profile.save()
-                    makethumbnail(profile.avatar.name)
+                    profile.thumbnail1 = makethumbnail(profile.avatar.name)
+                    profile.thumbnail2 = makethumbnail(profile.avatar.name, (300, 300))
                 profile.save()
             else:
                 print(form.errors)
