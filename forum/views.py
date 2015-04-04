@@ -1,4 +1,5 @@
 import os
+from os.path import join as pjoin
 from PIL import Image
 
 from django.shortcuts import render, get_object_or_404, redirect
@@ -137,8 +138,9 @@ def edit_profile(request, pk):
                     avatar = request.FILES['avatar']
                     profile.avatar = avatar
                     profile.save()
-                    # This thumbnail will always be loaded in pages instead of full sized photos.
-                    makethumbnail(profile.avatar.name)
+                    profile.thumbnail1 = makethumbnail(profile.avatar.name)
+                    profile.thumbnail2 = makethumbnail(profile.avatar.name, (300, 300))
+                    profile.save()
         else:
             form = UserProfileForm(request.POST)
             if form.is_valid():
@@ -155,64 +157,32 @@ def edit_profile(request, pk):
                 context_dict = {'errors': form.errors, 'form': form}
                 return render(request, 'forum/edit_profile.html', context_dict)
 
-        context_dict = {'form': form, 'edit_success': True, 'img': settings.MEDIA_URL + get_avatar(
-            profile.avatar.name, (300, 300))}
+        context_dict = {'form': form, 'edit_success': True}
         return render(request, 'forum/edit_profile.html', context_dict)
     else:
         form = UserProfileForm()
         context_dict = {'form': form}
-        if profile:
-            if profile.avatar:
-                context_dict['img'] = settings.MEDIA_URL + get_avatar(profile.avatar.name, (300, 300))
     return render(request, 'forum/edit_profile.html', context_dict)
 
 
-def makethumbnail(imgfile):
-    outdir = os.path.join(settings.MEDIA_ROOT, 'profile_images/thumbs')
-    if not os.path.exists(outdir):
-        print('Making thumb dir...', outdir)
-        os.mkdir(outdir)
+def makethumbnail(imgfile, size=(200, 200)):
+    thumbsdir = pjoin(settings.MEDIA_ROOT, 'profile_images/thumbs')
+    if not os.path.exists(thumbsdir):
+        print('Making thumb dir...', thumbsdir)
+        os.mkdir(thumbsdir)
 
     fname, ext = os.path.splitext(imgfile)
     fname = fname.split('/')[1]
-    size1 = (200, 200)
-    thumb1size = str(size1[0]) + 'x' + str(size1[1])
-    thumb1 = fname + '-thumb1-' + thumb1size + ext
-    thumb1file = os.path.join(outdir, thumb1)
 
-    size2 = (300, 300)
-    thumb2size = str(size2[0]) + 'x' + str(size2[1])
-    thumb2 = fname + '-thumb2-' + thumb2size + ext
-    thumb2file = os.path.join(outdir, thumb2)
+    thumb1size = str(size[0]) + 'x' + str(size[1])
+    thumbnail = fname + '-thumb1-' + thumb1size + ext
+    thumbnailfile = os.path.join(thumbsdir, thumbnail)
 
-    thumbfiles = [thumb1file, thumb2file]
-    sizes = [size1, size2]
-    for index, filename in enumerate(thumbfiles):
-        try:
-            thumb = Image.open(os.path.join(settings.MEDIA_ROOT, imgfile))
-            thumb.thumbnail(sizes[index], Image.ANTIALIAS)
-            thumb.save(filename)
-        except:
-            print("Error encountered. Skipping => ", filename)
-            return False
-    return True
-
-
-def get_avatar(imgname, size=(200, 200)):
-    outdir = os.path.join(settings.MEDIA_ROOT, 'profile_images/thumbs')
-    fname, ext = os.path.splitext(imgname)
-    thumbsize = str(size[0]) + 'x' + str(size[1])
-    thumb = fname.split('/')[1]
-    if size == (200, 200):
-        thumb += '-thumb1-' + thumbsize + ext
-    else:
-        thumb += '-thumb2-' + thumbsize + ext
-
-    if os.path.exists(outdir):
-        if os.path.isfile(os.path.join(outdir, thumb)):
-            return 'profile_images/thumbs/' + thumb
-        else:
-            return imgname
-    else:
-        # No thumbnail available
-        return imgname
+    try:
+        thumb = Image.open(pjoin(settings.MEDIA_ROOT, imgfile))
+        thumb.thumbnail(size, Image.ANTIALIAS)
+        thumb.save(thumbnailfile)
+        return 'profile_images/thumbs/'+thumbnail
+    except:
+        print("Error encountered. Skipping => ", thumbnailfile)
+        return ''

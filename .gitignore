@@ -1,4 +1,7 @@
 __pycache__/
-*.pyc
+*.py[co]
 *.sublime-workspace
 media/
+staticfiles
+forum.db
+local_settings.py

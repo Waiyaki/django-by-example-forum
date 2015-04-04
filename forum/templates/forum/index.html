@@ -26,11 +26,11 @@
                     {% if forums %}
                         {% for forum in forums %}
                             <tr>
-                                <td><a href="{% url 'forum:forum' pk=forum.pk %}">{{ forum.title }}</a></td>
+                                <td><a href="{% url 'forum:forum' pk=forum.pk %}"><h4>{{ forum.title }}</h4></a></td>
                                 <td class="text-center">{{ forum.num_threads }}</td>
                                 <td class="text-center">{{ forum.num_posts }}</td>
                                 <td><small>{{ forum.last_post.short | linebreaks }} {{ forum.last_post.created }}</small></td>
-                                <td><a href="{% url 'forum:forum' pk=forum.pk %}" class="btn btn-default">View Thread</a></td>
+                                <td class="text-center"><a href="{% url 'forum:forum' pk=forum.pk %}" class="btn btn-default">View Thread</a></td>
                             </tr>
                         {% endfor %}
                     {% else %}

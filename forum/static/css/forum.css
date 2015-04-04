@@ -21,6 +21,6 @@ body {
     padding: 10px;
 }
 
-.navbar-form[input] {
-    background: #ffffff;
+.media a {
+    text-decoration: none;
 }

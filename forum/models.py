@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
-
+from django.conf import settings
 # Create your models here.
 
 
@@ -71,6 +71,18 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User)
     avatar = models.ImageField(upload_to='profile_images', blank=True, null=True)
     posts = models.IntegerField(default=0)
+    thumbnail1 = models.ImageField(upload_to='profile_images/thumbs/', blank=True, null=True)
+    thumbnail2 = models.ImageField(upload_to='profile_images/thumbs/', blank=True, null=True)
 
     def __str__(self):
         return self.user.username
+
+    def get_thumb_one(self):
+        # Have to check if user.userprofile.avatar in template lest avatar be empty and the link reads /media/None
+        return str(settings.MEDIA_URL + (self.thumbnail1.name if self.thumbnail1.name else self.avatar.name))
+
+    def get_thumb_two(self):
+        return str(settings.MEDIA_URL + (self.thumbnail2.name if self.thumbnail2.name else self.avatar.name))
+
+    def get_avatar(self):
+        return str(settings.MEDIA_URL + self.avatar.name)
