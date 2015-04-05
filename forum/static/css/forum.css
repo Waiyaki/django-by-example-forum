@@ -1,19 +1,13 @@
 body {
     padding-top: 70px;
     padding-bottom: 70px;
+    background-color: #FAFAFA;
 }
 .post {
     background: #efefef;
-    border: 2px solid #ffffff;
+    border: 2px solid #FAFAFA;
     padding: 20px;
     margin: 2px;
-    border-radius: 5px;
-}
-
-#post-content {
-    background: #FFFFFF;
-    padding: 10px 5px 10px 20px;
-    margin-left: 5px;
     border-radius: 5px;
 }
 

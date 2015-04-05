@@ -12,7 +12,7 @@
     {% if thread %}
         <div class="page-header">
             <h1>
-                {{ thread.title }}.
+                {{ thread.title }}
             </h1>
             <br>
             {% if user.is_authenticated %}
@@ -29,8 +29,8 @@
                 <div class="media post">
                     <a class="pull-left">
                         {% if post.creator.userprofile.avatar %}
-                            <img src="{{ post.creator.userprofile.get_thumb_one }}" height="75" width="120" alt="{{ post.creator }}">
-                            <div>{{ post.creator }}<br>{{ post.created }}</div>
+                            <img src="{{ post.creator.userprofile.get_thumb_one }}" height="100" width="150" alt="{{ post.creator }}">
+                            <div>{{ post.creator }}<br>{{ post.created }}<br>Posts: {{ post.creator.userprofile.posts }}</div>
                         {% else %}
                             <span class="glyphicon glyphicon-user"></span>
                         {% endif %}

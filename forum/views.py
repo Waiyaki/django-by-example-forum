@@ -96,8 +96,11 @@ def add_post(request, pk):
         if form.is_valid():
             post = form.save(commit=False)
             post.creator = request.user
-            post.creator.userprofile.posts += 1
             post.save()
+
+            profile = UserProfile.objects.get(user=post.creator)
+            profile.posts += 1
+            profile.save()
             return redirect('forum:thread', pk=pk)
         else:
             print(form.errors)
@@ -183,7 +186,7 @@ def makethumbnail(imgfile, size=(200, 200)):
         thumb = Image.open(pjoin(settings.MEDIA_ROOT, imgfile))
         thumb.thumbnail(size, Image.ANTIALIAS)
         thumb.save(thumbnailfile)
-        return 'profile_images/thumbs/'+thumbnail
+        return 'profile_images/thumbs/' + thumbnail
     except:
         print("Error encountered. Skipping => ", thumbnailfile)
         return ''

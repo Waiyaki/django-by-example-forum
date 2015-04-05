@@ -6,15 +6,15 @@
 {% endblock title %}
 
 {% block content %}
+    <div class="col-xs-12 page-header">
+        <h1>Profile Page</h1>
+    </div>
     {% if edit_success %}
         <div class="alert alert-success alert-dismissable col-xs-12 col-sm-6 col-sm-offset-3" role="alert">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
             Profile successfully updated. <span class="glyphicon glyphicon-ok"></span>
         </div>
     {% endif %}
-    <div class="col-xs-12 page-header">
-        <h1>Profile Page</h1>
-    </div>
     <div class="col-xs-12 col-sm-4 pull-right thumbnail">
         {% if user.userprofile.avatar %}
             <a href="{{ user.userprofile.get_avatar }}">

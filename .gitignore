@@ -1,7 +1,7 @@
 __pycache__/
 *.py[co]
 *.sublime-workspace
-media/
+profile_images/
 staticfiles
 forum.db
 local_settings.py
