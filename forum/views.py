@@ -139,8 +139,13 @@ def edit_profile(request, pk):
             if form.is_valid():
                 if 'avatar' in request.FILES:
                     avatar = request.FILES['avatar']
+                    if not is_image(avatar.name):
+                        info = "Please choose an image file (jpg, png, gif)"
+                        context_dict = {'edit_success': False, 'form': form, 'info': info}
+                        return render(request, 'forum/edit_profile.html', context_dict)
+
                     profile.avatar = avatar
-                    profile.save()
+                    profile.save()  # Save here, else can't access profile.avatar in the two lines that follow.
                     profile.thumbnail1 = makethumbnail(profile.avatar.name)
                     profile.thumbnail2 = makethumbnail(profile.avatar.name, (300, 300))
                     profile.save()
@@ -151,22 +156,33 @@ def edit_profile(request, pk):
                 profile.user = request.user
                 if 'avatar' in request.FILES:
                     avatar = request.FILES['avatar']
+                    if not is_image(avatar.name):
+                        info = "Please choose an image file (jpg, png, gif)"
+                        context_dict = {'edit_success': False, 'form': form, 'info': info}
+                        return render(request, 'forum/edit_profile.html', context_dict)
                     profile.avatar = avatar
                     profile.save()
                     profile.thumbnail1 = makethumbnail(profile.avatar.name)
                     profile.thumbnail2 = makethumbnail(profile.avatar.name, (300, 300))
-                profile.save()
+                profile.save()  # Save the user profile, with or without an avatar.
             else:
                 print(form.errors)
-                context_dict = {'errors': form.errors, 'form': form}
+                context_dict = {'form': form, 'edit_success': False}
                 return render(request, 'forum/edit_profile.html', context_dict)
 
         context_dict = {'form': form, 'edit_success': True}
+        # Return this if successfully made or updated the profile.
         return render(request, 'forum/edit_profile.html', context_dict)
     else:
         form = UserProfileForm()
-        context_dict = {'form': form}
+        context_dict = {'form': form, 'get': True}
     return render(request, 'forum/edit_profile.html', context_dict)
+
+
+def is_image(name):
+    if os.path.splitext(name)[1].lower() in ['.jpeg', '.jpg', '.gif', '.png']:
+        return True
+    return False
 
 
 def makethumbnail(imgfile, size=(200, 200)):
@@ -189,4 +205,4 @@ def makethumbnail(imgfile, size=(200, 200)):
         return 'profile_images/thumbs/' + thumbnail
     except:
         print("Error encountered. Skipping => ", thumbnailfile)
-        return ''
+        return False
