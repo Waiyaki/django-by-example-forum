@@ -5,3 +5,4 @@ profile_images/
 staticfiles
 forum.db
 local_settings.py
+.directory

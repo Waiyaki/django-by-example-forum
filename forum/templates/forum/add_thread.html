@@ -13,9 +13,14 @@
         <div class="form-group">
             <legend>Start a new topic in {{ forum.title }}</legend>
         </div>
-        <div class="col-sm-6 pull-left">
+        <div class="col-sm-8 pull-left">
             <div class="form-group">
                 <label for="id_title">Subject</label>
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <p>This field is required.</p>
+                    </div>
+                {% endif %}
                 <input type="text" id="id_title" maxlength="60" name="title" class="form-control">
             </div>
 

@@ -1,13 +1,20 @@
 from django import forms
 from django.contrib.auth.models import User
 
-from .models import Post, Forum, Thread, UserProfile
+from .models import Post, Forum, Thread, UserProfile, Comment
 
 
 class PostForm(forms.ModelForm):
 
     class Meta:
         model = Post
+        fields = ('title', 'body')
+
+
+class CommentForm(forms.ModelForm):
+
+    class Meta:
+        models = Comment
         fields = ('title', 'body')
 
 

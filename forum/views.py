@@ -81,6 +81,7 @@ def add_thread(request, pk):
             return redirect('forum:forum', pk=pk)
         else:
             print(form.errors)
+            context_dict = {'form': form, 'forum': forum}
     else:
         form = ThreadForm()
         context_dict = {'form': form, 'forum': forum}

@@ -67,6 +67,17 @@ class Post(models.Model):
     short.allow_tags = True
 
 
+class Comment(models.Model):
+    title = models.CharField(max_length=60)
+    body = models.TextField(max_length=10000)
+    post = models.ForeignKey(Post)
+    created = models.DateTimeField(default=timezone.now)
+    creator = models.ForeignKey(User)
+
+    def __str__(self):
+        return self.title
+
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
     avatar = models.ImageField(upload_to='profile_images', blank=True, null=True)
