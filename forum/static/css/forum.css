@@ -3,12 +3,20 @@ body {
     padding-bottom: 70px;
     background-color: #FAFAFA;
 }
-.post {
+.post, .comment {
     background: #efefef;
-    border: 2px solid #FAFAFA;
     padding: 20px;
     margin: 2px;
+}
+
+.post {
+    border: 2px solid #FAFAFA;
     border-radius: 5px;
+}
+
+.comment {
+    clear: both;
+    border-top: 2px solid #a2A2A2;
 }
 
 .footer {
@@ -17,4 +25,15 @@ body {
 
 .media a {
     text-decoration: none;
+}
+
+.content-title {
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+}
+
+.start-new-btn {
+    position: fixed;
+    bottom: 75px;
+    right: 50px;
 }

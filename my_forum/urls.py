@@ -6,6 +6,7 @@ from registration.backends.simple.views import RegistrationView
 
 
 class MyRegView(RegistrationView):
+
     def get_success_url(self, request, user):
         return '/forum/'
 

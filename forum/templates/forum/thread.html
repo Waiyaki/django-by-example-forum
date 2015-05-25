@@ -11,13 +11,20 @@
 {% block content %}
     {% if thread %}
         <div class="page-header">
-            <h1>
+            <h1 class="content-title">
                 {{ thread.title }}
+                {% if thread.description %}
+                    <br>
+                    <small>{{ thread.description }}</small>
+                {% else %}
+                    <br>
+                    <small><em>No description available.</em></small>
+                {% endif %}
             </h1>
             <br>
             {% if user.is_authenticated %}
                 <div class="pull-right">
-                    <a href="{% url 'forum:add_post' pk=thread.pk %}" class="glyphicon glyphicon-plus pull-right btn btn-sm btn-primary"> Say something.</a>
+                    <a href="{% url 'forum:add_post' pk=thread.pk %}" class="pull-right btn btn-primary start-new-btn">New Post</a>
                 </div>
             {% endif %}
             <br>
@@ -36,26 +43,36 @@
                         {% endif %}
                     </a>
                     <div class="media-body">
-                        <h3 class="media-heading">{{ post.title }}</h3>
+                        <h3 class="media-heading content-title">{{ post.title }}</h3>
                         <p>
                             {{ post.body | linebreaks }}
                         </p>
-                        {% if post.comment_set %}
-                            {% for comment in comment_set %}
-                                <div class="media post">
-                                    <a class="pull-left">
-                                        {% if comment.creator.userprofile.avatar %}
-                                            <img src="{{ comment.creator.userprofile.get_thumb_one }}" height="50" width="75" alt="{{ comment.creator }}">
-                                            <div>{{ comment.creator }}<br>{{ comment.created }}</div>
-                                        {% else %}
-                                            <span class="glyphicon glyphicon-user"></span>
-                                        {% endif %}
-                                    </a>
-                                    <div class="media-body">
-                                        <h4 class="media-heading">{{ comment.title }}</h4>
-                                        <p>{{ comment.body | linebreaks }}</p>
+                        <span class="pull-left">
+                            <a href="{% url 'forum:comment' pk=post.pk %}" class="btn btn-link">Reply</a>
+                        </span>
+
+                        {% if comments %}
+                            <hr>
+                            <h4 class="page-header">Comments</h4>
+                            {% for comment in comments %}
+                                {% if comment.post.pk == post.pk %}
+                                    <div class="comment">
+                                        <div class="media">
+                                            <a class="pull-left">
+                                                {% if comment.creator.userprofile.avatar %}
+                                                    <img src="{{ comment.creator.userprofile.get_thumb_one }}" height="75" width="100" alt="{{ comment.creator }}">
+                                                    <div>{{ comment.creator }}<br>{{ comment.created }}</div>
+                                                {% else %}
+                                                    <span class="glyphicon glyphicon-user"></span>
+                                                {% endif %}
+                                            </a>
+                                            <div class="media-body">
+                                                <h4 class="media-heading content-title">{{ comment.title }}</h4>
+                                                <p>{{ comment.body | linebreaks }}</p>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
+                                {% endif %}
                             {% endfor %}
                         {% endif %}
                     </div>

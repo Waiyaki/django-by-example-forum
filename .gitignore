@@ -6,3 +6,4 @@ staticfiles
 forum.db
 local_settings.py
 .directory
+.idea

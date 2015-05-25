@@ -9,11 +9,17 @@
     <div>
         <h1 class="page-header">
             {{ forum.title }}
+            <br>
+            {% if forum.description %}
+                <small><em>{{ forum.description }}</em></small>
+            {% else %}
+                <small><em>No description available.</em></small>
+            {% endif %}
         </h1>
         <br>
         {% if user.is_authenticated %}
             <span>
-                <a href="{% url 'forum:add_thread' pk=forum.pk %}" class="glyphicon glyphicon-plus pull-right btn btn-md btn-primary"> Start New Topic</a>
+                <a href="{% url 'forum:add_thread' pk=forum.pk %}" class="btn btn-primary start-new-btn">New Topic</a>
             </span>
         {% endif %}
     </div>
@@ -30,13 +36,13 @@
                 {% if threads %}
                     {% for thread in threads %}
                         <tr>
-                            <td>
+                            <td class="text-center">
                                 <h4><a href="{% url 'forum:thread' pk=thread.pk %}">{{ thread.title }}</a></h4>
                             </td>
                             <td class="text-center">{{ thread.num_replies }}</td>
                             <td><small>{{ thread.last_post.short|linebreaks }}{{ thread.last_post.created }}</small></td>
                             <td class="text-center">
-                                <a href="{% url 'forum:thread' pk=thread.pk %}" class="btn btn-primary btn-sm">View Topic</a>
+                                <a href="{% url 'forum:thread' pk=thread.pk %}" class="btn btn-link">View</a>
                             </td>
                         </tr>
                     {% endfor %}

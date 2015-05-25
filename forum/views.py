@@ -1,17 +1,18 @@
 import os
 from os.path import join as pjoin
+
 from PIL import Image
 
-from django.shortcuts import render, get_object_or_404, redirect
 from django.http import Http404
-from django.core.paginator import Paginator, InvalidPage, EmptyPage
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404, redirect
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
 
-from .models import Forum, Thread, Post, UserProfile
-from .forms import PostForm, ThreadForm, ForumForm, UserProfileForm
+from .models import Forum, Thread, Post, UserProfile, Comment
+from .forms import PostForm, ThreadForm, ForumForm, UserProfileForm, CommentForm
 # Create your views here.
 
 
@@ -46,7 +47,10 @@ def thread(request, pk):
 
     posts = make_paginator(request, posts, 15)
     thread = get_object_or_404(Thread, pk=pk)
-    context_dict = {'posts': posts, 'thread': thread}
+
+    # Get all comments associated with posts in this thread.
+    comments = [com for com in Comment.objects.all() if com.post.thread.pk == thread.pk]
+    context_dict = {'posts': posts, 'thread': thread, 'comments': comments}
     return render(request, 'forum/thread.html', context_dict)
 
 
@@ -134,6 +138,7 @@ def edit_profile(request, pk):
     except:
         profile = None
 
+    # Repeated code in if 'avatar' in request.FILES -- should figure out an abstraction
     if request.method == 'POST':
         if profile:
             form = UserProfileForm(request.POST, instance=profile)
@@ -193,11 +198,11 @@ def makethumbnail(imgfile, size=(200, 200)):
         os.mkdir(thumbsdir)
 
     fname, ext = os.path.splitext(imgfile)
-    fname = fname.split('/')[1]
+    fname = fname.split('/')[1]     # Remove 'profile_images' prefix
 
-    thumb1size = str(size[0]) + 'x' + str(size[1])
-    thumbnail = fname + '-thumb1-' + thumb1size + ext
-    thumbnailfile = os.path.join(thumbsdir, thumbnail)
+    thumbsize = str(size[0]) + 'x' + str(size[1])
+    thumbnail = fname + '-thumb-' + thumbsize + ext
+    thumbnailfile = pjoin(thumbsdir, thumbnail)
 
     try:
         thumb = Image.open(pjoin(settings.MEDIA_ROOT, imgfile))
@@ -207,3 +212,22 @@ def makethumbnail(imgfile, size=(200, 200)):
     except:
         print("Error encountered. Skipping => ", thumbnailfile)
         return False
+
+
+@login_required
+def comment(request, pk):
+    post = get_object_or_404(Post, id=pk)
+
+    if request.method == 'POST':
+        comment = Comment(post=post)
+        comment_form = CommentForm(request.POST, instance=comment)
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.creator = request.user
+            comment.save()
+
+            return redirect('forum:thread', pk=post.thread_id)
+    else:
+        comment_form = CommentForm()
+    context_dict = {'post': post, 'form': comment_form}
+    return render(request, 'forum/add_comment.html', context_dict)

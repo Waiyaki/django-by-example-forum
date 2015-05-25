@@ -14,7 +14,7 @@ class PostForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
 
     class Meta:
-        models = Comment
+        model = Comment
         fields = ('title', 'body')
 
 
@@ -22,14 +22,14 @@ class ThreadForm(forms.ModelForm):
 
     class Meta:
         model = Thread
-        fields = ('title',)
+        fields = ('title', 'description')
 
 
 class ForumForm(forms.ModelForm):
 
     class Meta:
         model = Forum
-        fields = ('title',)
+        fields = ('title', 'description')
 
 
 class UserProfileForm(forms.ModelForm):

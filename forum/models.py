@@ -9,6 +9,7 @@ class Forum(models.Model):
     title = models.CharField(max_length=60)
     created = models.DateTimeField(default=timezone.now)
     creator = models.ForeignKey(User, blank=True, null=True)
+    description = models.CharField(max_length=255, blank=True, null=True)
 
     def num_posts(self):
         return sum([thread.num_posts() for thread in self.thread_set.all()])
@@ -37,6 +38,7 @@ class Thread(models.Model):
     created = models.DateTimeField(default=timezone.now)
     creator = models.ForeignKey(User, blank=True, null=True)
     forum = models.ForeignKey(Forum)
+    description = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return str(self.creator) + " - " + self.title
