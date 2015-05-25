@@ -1,0 +1,22 @@
+{% extends "forum/base.html" %}
+{% load staticfiles %}
+
+{% if forum %}
+    {% block title %}
+        | Editing a thread in: {{ forum.title }}
+    {% endblock title %}
+{% endif %}
+
+{% block content %}
+    <div class="container col-md-10 col-md-offset-1">
+        <form role="form" action="{% url 'forum:edit_thread' pk=thread.pk %}" method="post" id="form-content" class="threadforum">
+            {% csrf_token %}
+            {{ form.as_p }}
+        </form>
+        <div class="row" style="clear: both">
+            <div class="pull-left">
+                <a href="{% url 'forum:forum' pk=forum.pk %}">&laquo; Back to forum.</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

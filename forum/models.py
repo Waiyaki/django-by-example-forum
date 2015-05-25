@@ -92,10 +92,12 @@ class UserProfile(models.Model):
 
     def get_thumb_one(self):
         # Have to check if user.userprofile.avatar in template lest avatar be empty and the link reads /media/None
-        return str(settings.MEDIA_URL + (self.thumbnail1.name if self.thumbnail1.name else self.avatar.name))
+        return str(settings.MEDIA_URL + (
+            self.thumbnail1.name if self.thumbnail1.name else self.avatar.name))
 
     def get_thumb_two(self):
-        return str(settings.MEDIA_URL + (self.thumbnail2.name if self.thumbnail2.name else self.avatar.name))
+        return str(settings.MEDIA_URL + (
+            self.thumbnail2.name if self.thumbnail2.name else self.avatar.name))
 
     def get_avatar(self):
         return str(settings.MEDIA_URL + self.avatar.name)

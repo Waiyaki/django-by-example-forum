@@ -1,0 +1,22 @@
+{% extends "forum/base.html" %}
+{% load staticfiles %}
+
+{% if comment %}
+    {% block title %}
+        | Editing {{ comment.title }}
+    {% endblock title %}
+{% endif %}
+
+{% block content %}
+    <div class="container col-md-10 col-md-offset-1">
+        <form role="form" action="{% url 'forum:edit_comment' pk=comment.pk %}" method="post" id="form-content" class="compost">
+            {% csrf_token %}
+            {{ form.as_p }}
+        </form>
+        <div class="row" style="clear: both">
+            <div class="pull-left">
+                <a href="{% url 'forum:thread' pk=comment.post.thread_id %}">&laquo; Back to topic.</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

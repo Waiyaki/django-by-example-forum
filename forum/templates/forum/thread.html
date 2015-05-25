@@ -9,86 +9,104 @@
 {% endif %}
 
 {% block content %}
-    {% if thread %}
-        <div class="page-header">
-            <h1 class="content-title">
-                {{ thread.title }}
-                {% if thread.description %}
-                    <br>
-                    <small>{{ thread.description }}</small>
-                {% else %}
-                    <br>
-                    <small><em>No description available.</em></small>
-                {% endif %}
-            </h1>
-            <br>
-            {% if user.is_authenticated %}
-                <div class="pull-right">
-                    <a href="{% url 'forum:add_post' pk=thread.pk %}" class="pull-right btn btn-primary start-new-btn">New Post</a>
+    <div class="container">
+        {% if thread %}
+            <div class="page-header">
+                <h1 class="content-title">
+                    <span id="thread-title">{{ thread.title }}</span>
+                    {% if thread.description %}
+                        <br>
+                        <span id="thread-description"><small>{{ thread.description }}</small></span>
+                    {% else %}
+                        <br>
+                        <small><em>No description available.</em></small>
+                    {% endif %}
+                </h1>
+                <div>
+                    <small>Created by: {{ thread.creator }}</small> <br>
+                    <small>Created On: {{ thread.created }}</small>
                 </div>
-            {% endif %}
-            <br>
-        </div>
-    {% endif %}
-    <div class="col-xs-12 col-md-10 col-md-offset-1">
-        {% if posts %}
-            {% for post in posts %}
-                <div class="media post">
-                    <a class="pull-left">
-                        {% if post.creator.userprofile.avatar %}
-                            <img src="{{ post.creator.userprofile.get_thumb_one }}" height="100" width="150" alt="{{ post.creator }}">
-                            <div>{{ post.creator }}<br>{{ post.created }}<br>Posts: {{ post.creator.userprofile.posts }}</div>
-                        {% else %}
-                            <span class="glyphicon glyphicon-user"></span>
-                        {% endif %}
-                    </a>
-                    <div class="media-body">
-                        <h3 class="media-heading content-title">{{ post.title }}</h3>
-                        <p>
-                            {{ post.body | linebreaks }}
-                        </p>
-                        <span class="pull-left">
-                            <a href="{% url 'forum:comment' pk=post.pk %}" class="btn btn-link">Reply</a>
-                        </span>
-
-                        {% if comments %}
-                            <hr>
-                            <h4 class="page-header">Comments</h4>
-                            {% for comment in comments %}
-                                {% if comment.post.pk == post.pk %}
-                                    <div class="comment">
-                                        <div class="media">
-                                            <a class="pull-left">
-                                                {% if comment.creator.userprofile.avatar %}
-                                                    <img src="{{ comment.creator.userprofile.get_thumb_one }}" height="75" width="100" alt="{{ comment.creator }}">
-                                                    <div>{{ comment.creator }}<br>{{ comment.created }}</div>
-                                                {% else %}
-                                                    <span class="glyphicon glyphicon-user"></span>
-                                                {% endif %}
-                                            </a>
-                                            <div class="media-body">
-                                                <h4 class="media-heading content-title">{{ comment.title }}</h4>
-                                                <p>{{ comment.body | linebreaks }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                </div>
-            {% endfor %}
-        {% else %}
-            <div class="well well-lg">
-                <h3>No posts about this yet.</h3>
+                <br>
                 {% if user.is_authenticated %}
-                    <p>You can post something <a href="{% url 'forum:add_post' pk=thread.pk %}">here.</a></p>
-                    
+                    <div class="pull-right">
+                        <a href="{% url 'forum:add_post' pk=thread.pk %}" class="pull-right btn btn-primary start-new-btn">New Post</a>
+                    </div>
+                {% endif %}
+
+                {% if thread.creator == user and user.is_authenticated %}
+                    <span><a href="{% url 'forum:edit_thread' pk=thread.pk %}" class="btn btn-link" id="editThread">Edit thread name and description</a></span>                
                 {% endif %}
             </div>
         {% endif %}
-        <div class="pull-left" style="clear: both">
-            <a href="{% url 'forum:forum' pk=thread.forum.pk %}">&laquo; Back to thread.</a>
+        <div class="col-xs-12 col-md-10 col-md-offset-1">
+            {% if posts %}
+                {% for post in posts %}
+                    <div class="media post">
+                        <a class="pull-left">
+                            {% if post.creator.userprofile.avatar %}
+                                <img src="{{ post.creator.userprofile.get_thumb_one }}" height="100" width="150" alt="{{ post.creator }}">
+                                <div>{{ post.creator }}<br>{{ post.created }}<br>Posts: {{ post.creator.userprofile.posts }}</div>
+                            {% else %}
+                                <span class="glyphicon glyphicon-user"></span>
+                            {% endif %}
+                        </a>
+                        <div class="media-body">
+                            <h3 class="media-heading content-title">{{ post.title }}</h3>
+                            <p>
+                                {{ post.body | linebreaks }}
+                            </p>
+                            <div>
+                                {% if user == post.creator and user.is_authenticated %}
+                                    <span><a href="{% url 'forum:edit_post' pk=post.pk %}">Edit</a></span>
+                                {% endif %}
+                                <span>
+                                    <a href="{% url 'forum:comment' pk=post.pk %}" class="btn btn-link">Reply</a>
+                                </span>
+                            </div>
+
+                            {% if comments %}
+                                <hr>
+                                <h4 class="page-header content-title">Comments</h4>
+                                {% for comment in comments %}
+                                    {% if comment.post.pk == post.pk %}
+                                        <div class="comment">
+                                            <div class="media">
+                                                <a class="pull-left">
+                                                    {% if comment.creator.userprofile.avatar %}
+                                                        <img src="{{ comment.creator.userprofile.get_thumb_one }}" height="75" width="100" alt="{{ comment.creator }}">
+                                                        <div>{{ comment.creator }}<br>{{ comment.created }}</div>
+                                                    {% else %}
+                                                        <span class="glyphicon glyphicon-user"></span>
+                                                    {% endif %}
+                                                </a>
+                                                <div class="media-body">
+                                                    <h4 class="media-heading content-title">{{ comment.title }}</h4>
+                                                    <p>{{ comment.body | linebreaks }}</p>
+                                                    {% if user == comment.creator %}
+                                                        <br>
+                                                        <span><a href="{% url 'forum:edit_comment' pk=comment.pk %}" class="btn btn-link">Edit</a></span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="well well-lg">
+                    <h3>No posts about this yet.</h3>
+                    {% if user.is_authenticated %}
+                        <p>You can post something <a href="{% url 'forum:add_post' pk=thread.pk %}">here.</a></p>
+                        
+                    {% endif %}
+                </div>
+            {% endif %}
+            <div class="pull-left" style="clear: both">
+                <a href="{% url 'forum:forum' pk=thread.forum.pk %}">&laquo; Back to thread.</a>
+            </div>
         </div>
     </div>
     {% if posts %}

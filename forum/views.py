@@ -3,7 +3,7 @@ from os.path import join as pjoin
 
 from PIL import Image
 
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -83,13 +83,33 @@ def add_thread(request, pk):
             thread.creator = request.user
             thread.save()
             return redirect('forum:forum', pk=pk)
-        else:
-            print(form.errors)
-            context_dict = {'form': form, 'forum': forum}
     else:
         form = ThreadForm()
-        context_dict = {'form': form, 'forum': forum}
+
+    context_dict = {'form': form, 'forum': forum}
     return render(request, 'forum/add_thread.html', context_dict)
+
+
+@login_required
+def edit_thread(request, pk):
+    thread = get_object_or_404(Thread, pk=pk)
+
+    if request.method == 'POST':
+        form = ThreadForm(request.POST, instance=thread)
+        if form.is_valid():
+            thread = form.save(commit=False)
+            thread.creator = request.user
+            thread.save()
+            return redirect('forum:thread', pk=thread.pk)
+    else:
+        form = ThreadForm(instance=thread)
+
+    context_dict = {
+        'form': form,
+        'forum': Forum.objects.get(pk=thread.forum.pk),
+        'thread': thread
+    }
+    return render(request, 'forum/edit_thread.html', context_dict)
 
 
 @login_required
@@ -111,12 +131,32 @@ def add_post(request, pk):
             print(form.errors)
     else:
         form = PostForm()
-        context_dict = {'form': form, 'thread': thread}
+    context_dict = {'form': form, 'thread': thread}
     return render(request, 'forum/add_post.html', context_dict)
 
 
 @login_required
+def edit_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+
+    if request.method == 'POST':
+        form = PostForm(request.POST, instance=post)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.creator = request.user
+            post.save()
+            return redirect('forum:thread', pk=post.thread.pk)
+    else:
+        form = PostForm(instance=post)
+    context_dict = {'form': form, 'post': post}
+    return render(request, 'forum/edit_post.html', context_dict)
+
+
+@login_required
 def create_forum(request):
+    if not request.user.is_staff:
+        return HttpResponseRedirect('/forum/')
+
     if request.method == 'POST':
         form = ForumForm(request.POST)
         if form.is_valid():
@@ -129,6 +169,23 @@ def create_forum(request):
     else:
         form = ForumForm()
     return render(request, 'forum/create_forum.html', {'form': form})
+
+
+@login_required
+def edit_forum(request, pk):
+    forum = get_object_or_404(Forum, pk=pk)
+
+    if request.method == 'POST':
+        form = ForumForm(request.POST, instance=forum)
+        if form.is_valid():
+            forum = form.save(commit=False)
+            forum.creator = request.user
+            forum.save()
+            return redirect('forum:forum', pk=pk)
+    else:
+        form = ForumForm(instance=forum)
+    context_dict = {'form': form, 'forum': forum}
+    return render(request, 'forum/edit_forum.html', context_dict)
 
 
 @login_required
@@ -231,3 +288,20 @@ def comment(request, pk):
         comment_form = CommentForm()
     context_dict = {'post': post, 'form': comment_form}
     return render(request, 'forum/add_comment.html', context_dict)
+
+
+@login_required
+def edit_comment(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.creator = request.user
+            comment.save()
+            return redirect('forum:thread', pk=comment.post.thread_id)
+    else:
+        form = CommentForm(instance=comment)
+    context_dict = {'form': form, 'comment': comment}
+    return render(request, 'forum/edit_comment.html', context_dict)

@@ -6,17 +6,17 @@ body {
 .post, .comment {
     background: #efefef;
     padding: 20px;
-    margin: 2px;
 }
 
 .post {
     border: 2px solid #FAFAFA;
-    border-radius: 5px;
+    margin: 2px;
 }
 
 .comment {
     clear: both;
-    border-top: 2px solid #a2A2A2;
+    border: 1px solid #A2A2A2;
+    margin: 0px;
 }
 
 .footer {
@@ -34,6 +34,7 @@ body {
 
 .start-new-btn {
     position: fixed;
-    bottom: 75px;
-    right: 50px;
+    bottom: 55px;
+    right: 25px;
+    z-index: 1;
 }
